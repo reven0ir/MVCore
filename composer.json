@@ -1,0 +1,17 @@
+{
+  "autoload": {
+    "psr-4": {
+      "MVCore\\": "core/",
+      "App\\": "app/"
+    }
+  },
+  "authors": [
+    {
+      "name": "x_revenoir_x",
+      "email": "michail.yashchuck@gmail.com"
+    }
+  ],
+  "require": {
+    "symfony/var-dumper": "^7.2"
+  }
+}
