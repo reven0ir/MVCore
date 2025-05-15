@@ -57,9 +57,11 @@ class Request
     {
         $data = [];
         $request_data = $this->isGet() ? $_GET : $_POST;
+
         foreach ($request_data as $key => $value) {
             $data[$key] = trim($value);
         }
+
         return $data;
     }
 }

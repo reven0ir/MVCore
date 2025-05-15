@@ -39,6 +39,7 @@ class Router
 
         if (false === $callback) {
             $this->response->setResponseCode(404);
+
             return view('errors/404');
         }
 

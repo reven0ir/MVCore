@@ -10,6 +10,7 @@ function view($view = '', $data = [], $layout = ''): string | \MVCore\View
     if ($view) {
         return app()->view->render($view, $data, $layout);
     } else {
+
         return app()->view;
     }
 }
