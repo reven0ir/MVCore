@@ -38,9 +38,7 @@ class Router
         $callback = $this->routes[$method]["/{$path}"] ?? false;
 
         if (false === $callback) {
-            $this->response->setResponseCode(404);
-
-            return view('errors/404');
+            abort();
         }
 
         if (is_array($callback)) {
