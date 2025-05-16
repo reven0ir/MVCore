@@ -8,12 +8,14 @@ abstract class Model
     public array $fillable = [];
     public array $attributes = [];
     public array $rules = [];
+    public array $labels = [];
     protected array $rules_list = ['required', 'min', 'max', 'email'];
     protected array $errors = [];
     protected array $error_messages = [
-        'required' => 'This :fieldname: field is required',
-        'min' => 'This :fieldname: field must be at least minimum :rulevalue: characters',
-        'max' => 'This :fieldname: field must be at most maximum :rulevalue: characters'
+        'required' => ':field-name: field is required',
+        'email' => ':field-name: field must be a valid email address',
+        'min' => ':field-name: field must be at least minimum :rule-value: characters',
+        'max' => ':field-name: field must be at most maximum :rule-value: characters'
     ];
 
     public function loadData(): void
@@ -31,8 +33,6 @@ abstract class Model
 
     public function validate(): bool
     {
-        dump($this->attributes);
-        dump($this->rules);
 
         foreach($this->attributes as $field => $value) {
             if (isset($this->rules[$field])) {
@@ -44,21 +44,40 @@ abstract class Model
             }
         }
 
-        return true;
+        return !$this->hasError();
     }
 
     protected function checkRule(array $field): void
     {
-        dump($field);
-
         foreach($field['rules'] as $rule => $rule_value) {
             if (in_array($rule, $this->rules_list)) {
-//                var_dump($field['field-name'], $rule, $rule_value);
                 if (!call_user_func_array([$this, $rule], [$field['value'], $rule_value])) {
-                    dump("Ошибка: " . $field['field-name'], "Правило:" . $rule);
+                    $this->addError(
+                        $field['field-name'],
+                        str_replace(
+                            [':field-name:', ':rule-value:'],
+                            [$this->labels[$field['field-name']] ?? $field['field-name'], $rule_value],
+                            $this->error_messages[$rule],
+                        )
+                    );
                 }
             }
         }
+    }
+
+    protected function addError($field_name, $error): void
+    {
+        $this->errors[$field_name][] = $error;
+    }
+
+    public function getError(): array
+    {
+        return $this->errors;
+    }
+
+    protected function hasError(): bool
+    {
+        return !empty($this->errors);
     }
 
     protected function required($value, $rule_value): bool
