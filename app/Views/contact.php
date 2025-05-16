@@ -9,8 +9,18 @@
             <form action="" method="post">
 
                 <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" name="name" id="name" class="form-control" placeholder="John Johnson">
+                </div>
+
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" name="username" id="username" class="form-control" placeholder="john_johnson">
+                </div>
+
+                <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" name="email" id="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+                    <input type="text" name="email" id="email" class="form-control" placeholder="name@example.com">
                 </div>
 
                 <div class="mb-3">
