@@ -23,13 +23,7 @@ class View
             require $view_file;
             $this->content = ob_get_clean();
         } else {
-            app()->response->setResponseCode(500);
-
-            return view(
-                'errors/500',
-                ['error' => "View not found {$view_file}"],
-                false
-            );
+            abort("View not found {$view_file}", 500);
         }
 
         if (false === $layout) {
@@ -45,14 +39,10 @@ class View
 
             return ob_get_clean();
         } else {
-            app()->response->setResponseCode(500);
-
-            return view(
-                'errors/500',
-                ['error' => "Layout not found {$layout_file}"],
-                false
-            );
+            abort("Layout not found {$layout_file}", 500);
         }
+
+        return '';
     }
 
 }
