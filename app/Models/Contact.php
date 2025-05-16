@@ -22,4 +22,10 @@ class Contact extends Model
             'min' => 25
         ],
     ];
+    public array $labels = [
+        'name' => 'Name',
+        'email' => 'E-mail',
+        'content' => 'Content',
+        'username' => 'Username'
+    ];
 }
