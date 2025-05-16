@@ -9,7 +9,6 @@ class Response
         http_response_code($code);
     }
 
-    //TODO: add response code 302
     public function redirect(string $url = '', int $code = 302): never
     {
         if ($url) {
