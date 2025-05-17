@@ -5,6 +5,7 @@ namespace MVCore;
 abstract class Model
 {
 
+    public string $table = '';
     public array $fillable = [];
     public array $attributes = [];
     public array $rules = [];
@@ -17,6 +18,21 @@ abstract class Model
         'min' => ':field-name: field must be at least minimum :rule-value: characters',
         'max' => ':field-name: field must be at most maximum :rule-value: characters'
     ];
+
+    public function save(): false|string
+    {
+        $field_keys = array_keys($this->attributes);
+        $fields = array_map(fn($field) => "{$field}", $field_keys);
+        $fields = implode(',', $fields);
+
+        $values_placeholders = array_map(fn($value) => ":{$value}", $field_keys);
+        $values_placeholders = implode(',', $values_placeholders);
+
+        $query = "INSERT INTO {$this->table} ($fields) VALUES ($values_placeholders)";
+        db()->query($query, $this->attributes);
+
+        return db()->getInsertId();
+    }
 
     public function loadData(): void
     {
