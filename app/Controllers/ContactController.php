@@ -3,9 +3,8 @@
 namespace App\Controllers;
 
 use App\Models\Contact;
-use MVCore\Controller;
 
-class ContactController extends Controller
+class ContactController extends BaseController
 {
 
     public function index()
