@@ -28,6 +28,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="<?= base_url('/contact') ?>">Contact</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= base_url('/posts/create') ?>">Create post</a>
+                </li>
             </ul>
         </div>
     </div>
