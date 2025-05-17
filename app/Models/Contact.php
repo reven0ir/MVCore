@@ -7,7 +7,6 @@ use MVCore\Model;
 class Contact extends Model
 {
     public array $fillable = ['email', 'content', 'name', 'username'];
-    public array $attributes = [];
     public array $rules = [
         'name' => [
             'required' => true,
