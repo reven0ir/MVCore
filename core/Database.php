@@ -10,11 +10,12 @@ class Database
 
     public function __construct()
     {
-        $dsn = 'pgsql:host='. DB['host'] . ';dbname=' . DB['dbname'];
+        $dsn = 'pgsql:host=' . DB['host'] . ';dbname=' . DB['dbname'];
 
         try {
             $this->conn = new \PDO($dsn, DB['user'], DB['password'], DB['options']);
         } catch (\PDOException $e) {
+            error_log('[' . date('Y-m-d H:i:s') . '] DB Error: ' . $e->getMessage() . PHP_EOL, 3, ERROR_LOG_FILE);
             abort($e->getMessage(), 500);
         }
 
@@ -27,18 +28,19 @@ class Database
             $this->stmt = $this->conn->prepare($query);
             $this->stmt->execute($params);
         } catch (\PDOException $e) {
+            error_log('[' . date('Y-m-d H:i:s') . '] DB Error: ' . $e->getMessage() . PHP_EOL, 3, ERROR_LOG_FILE);
             abort($e->getMessage(), 500);
         }
 
         return $this;
     }
 
-    public function get()
+    public function get(): array|false
     {
         return $this->stmt->fetchAll();
     }
 
-    public function findAll($tbl)
+    public function findAll($tbl): array|false
     {
         $this->query("SELECT * FROM {$tbl}");
         return $this->stmt->fetchAll();
@@ -58,5 +60,10 @@ class Database
         }
 
         return $result;
+    }
+
+    public function getInsertId(): false|string
+    {
+        return $this->conn->lastInsertId();
     }
 }
