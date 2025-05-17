@@ -67,7 +67,14 @@ function get_validation_class($field_name, $errors = []): string
 function abort($error = '', $code = 404)
 {
     response()->setResponseCode($code);
-    echo view("errors/{$code}", ['error' => $error], false);
+    if (DEBUG || $code = 404) {
+        echo view("errors/{$code}", ['error' => $error], false);
+    }
 
     die;
+}
+
+function db(): \MVCore\Database
+{
+    return app()->db;
 }
