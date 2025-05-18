@@ -2,6 +2,9 @@
 .idea/
 .vscode/
 
+#OSP
+.osp/
+
 #Composer
 vendor/
 
