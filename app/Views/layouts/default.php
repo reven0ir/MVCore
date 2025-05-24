@@ -36,8 +36,14 @@
     </div>
 </nav>
 
+<?php get_alerts(); ?>
+
 <?= $this->content; ?>
 
 <script src="<?= base_url('/'); ?>assets/bootstrap/js/bootstrap.js"></script>
+
+<?php if (DEBUG): ?>
+    <?php dump(db()->getQueries()) ?>
+<?php endif; ?>
 </body>
 </html>
