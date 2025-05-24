@@ -10,3 +10,6 @@ vendor/
 
 #All Markdown Files
 *.md
+
+#Ignore .log files
+/tmp/*.log
