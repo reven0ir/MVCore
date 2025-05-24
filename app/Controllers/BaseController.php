@@ -7,6 +7,4 @@ use MVCore\Controller;
 class BaseController extends Controller
 {
 
-
-
 }
