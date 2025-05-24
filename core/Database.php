@@ -5,8 +5,9 @@ namespace MVCore;
 class Database
 {
 
-    private \PDO $conn;
-    private \PDOStatement $stmt;
+    protected \PDO $conn;
+    protected \PDOStatement $stmt;
+    protected array $queries = [];
 
     public function __construct()
     {
@@ -27,6 +28,11 @@ class Database
         try {
             $this->stmt = $this->conn->prepare($query);
             $this->stmt->execute($params);
+            if (DEBUG) {
+                ob_start();
+                $this->stmt->debugDumpParams();
+                $this->queries[] = ob_get_clean();
+            }
         } catch (\PDOException $e) {
             error_log('[' . date('Y-m-d H:i:s') . '] DB Error: ' . $e->getMessage() . PHP_EOL, 3, ERROR_LOG_FILE);
             abort($e->getMessage(), 500);
@@ -42,7 +48,7 @@ class Database
 
     public function findAll($tbl): array|false
     {
-        $this->query("SELECT * FROM {$tbl}");
+        $this->query("SELECT * FROM {$tbl} ORDER BY id ASC");
         return $this->stmt->fetchAll();
     }
 
@@ -65,5 +71,25 @@ class Database
     public function getInsertId(): false|string
     {
         return $this->conn->lastInsertId();
+    }
+
+    public function getRowCount(): int
+    {
+        return $this->stmt->rowCount();
+    }
+
+    public function getQueries(): array
+    {
+        $res = [];
+        foreach ($this->queries as $key => $query) {
+            $line = strtok($query, PHP_EOL);
+            while (false !== $line) {
+                if (str_contains($line, 'SQL:') || str_contains($line, 'Sent SQL:')) {
+                    $res[$key][] = $line;
+                }
+                $line = strtok(PHP_EOL);
+            }
+        }
+        return $res;
     }
 }
