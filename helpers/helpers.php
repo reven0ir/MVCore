@@ -78,3 +78,20 @@ function db(): \MVCore\Database
 {
     return app()->db;
 }
+
+function session(): \MVCore\Session
+{
+    return app()->session;
+}
+
+function get_alerts(): void
+{
+    foreach (['success', 'error', 'info'] as $type) {
+        if ($message = session()->getFlash($type)) {
+            $varName = 'flash_' . $type;
+            view()->renderPartial("partials/alert_{$type}", [
+                $varName => $message
+            ]);
+        }
+    }
+}
