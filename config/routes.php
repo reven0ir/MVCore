@@ -12,3 +12,9 @@ $app->router->post('/contact', [\App\Controllers\ContactController::class, 'send
 
 $app->router->get('/posts/create', [\App\Controllers\PostController::class, 'create']);
 $app->router->post('/posts/store', [\App\Controllers\PostController::class, 'store']);
+
+$app->router->get('/posts/edit', [\App\Controllers\PostController::class, 'edit']);
+$app->router->post('/posts/update', [\App\Controllers\PostController::class, 'update']);
+
+$app->router->get('/posts/delete', [\App\Controllers\PostController::class, 'delete']);
+$app->router->post('/posts/update', [\App\Controllers\PostController::class, 'update']);
