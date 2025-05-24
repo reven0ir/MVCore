@@ -21,17 +21,46 @@ abstract class Model
 
     public function save(): false|string
     {
+        // fields
         $field_keys = array_keys($this->attributes);
         $fields = array_map(fn($field) => "{$field}", $field_keys);
         $fields = implode(',', $fields);
 
+        // values
         $values_placeholders = array_map(fn($value) => ":{$value}", $field_keys);
         $values_placeholders = implode(',', $values_placeholders);
-
         $query = "INSERT INTO {$this->table} ($fields) VALUES ($values_placeholders)";
         db()->query($query, $this->attributes);
 
         return db()->getInsertId();
+    }
+
+    public function update()
+    {
+        if (!isset($this->attributes['id'])) {
+            return false;
+        }
+
+        $fields = '';
+        foreach ($this->attributes as $key => $value) {
+            if ($key == 'id') {
+                continue;
+            }
+            $fields .= "{$key} = :{$key},";
+        }
+
+        $fields = rtrim($fields, ',');
+
+        $query = "UPDATE {$this->table} SET {$fields} WHERE id = :id";
+        db()->query($query, $this->attributes);
+
+        return db()->getRowCount();
+    }
+
+    public function delete(int $id): int
+    {
+        db()->query("DELETE FROM {$this->table} WHERE id = :id", [$id]);
+        return db()->getRowCount();
     }
 
     public function loadData(): void
@@ -89,6 +118,19 @@ abstract class Model
     public function getError(): array
     {
         return $this->errors;
+    }
+
+    public function listError(): string
+    {
+        $output = '<ul class="list-unstyled">';
+        foreach ($this->errors as $field_name => $errors) {
+            foreach ($errors as $error) {
+                $output .= "<li>{$error}</li>";
+            }
+        }
+        $output .= '</ul>';
+
+        return $output;
     }
 
     protected function hasError(): bool
