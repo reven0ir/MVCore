@@ -45,4 +45,15 @@ class View
         return '';
     }
 
+    public function renderPartial($view, $data = [])
+    {
+        extract($data);
+        $view_file = VIEWS . "/{$view}.php";
+        if(is_file($view_file)) {
+            require $view_file;
+        } else {
+            echo "File {$view_file} not found.";
+        }
+    }
+
 }
