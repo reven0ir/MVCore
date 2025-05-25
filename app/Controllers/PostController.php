@@ -7,6 +7,16 @@ use App\Models\Post;
 class PostController extends BaseController
 {
 
+    public function show()
+    {
+        $slug = router()->route_params['slug'] ?? '';
+        $post = db()->query('SELECT * FROM posts WHERE slug = ?', [$slug])->getOne();
+        if (!$post) {
+            abort();
+        }
+
+        return view('posts/show', ['title' => $post['title'], 'post' => $post]);
+    }
     public function edit()
     {
         $id = request()->get('id');
