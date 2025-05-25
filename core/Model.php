@@ -10,13 +10,14 @@ abstract class Model
     public array $attributes = [];
     public array $rules = [];
     public array $labels = [];
-    protected array $rules_list = ['required', 'min', 'max', 'email'];
+    protected array $rules_list = ['required', 'min', 'max', 'email', 'unique'];
     protected array $errors = [];
     protected array $error_messages = [
         'required' => ':field-name: field is required',
         'email' => ':field-name: field must be a valid email address',
         'min' => ':field-name: field must be at least minimum :rule-value: characters',
-        'max' => ':field-name: field must be at most maximum :rule-value: characters'
+        'max' => ':field-name: field must be at most maximum :rule-value: characters',
+        'unique' => ':field-name: field must be unique',
     ];
 
     public function save(): false|string
@@ -156,6 +157,12 @@ abstract class Model
     protected function email($value, $rule_value): bool
     {
         return filter_var($value, FILTER_VALIDATE_EMAIL);
+    }
+
+    protected function unique($value, $rule_value): bool
+    {
+        $data = explode(',', $rule_value);
+        return !(db()->query("SELECT {$data[0]} FROM {$data[0]} WHERE {$data[1]} = :value", [':value' => $value])->getColumn());
     }
 
 }

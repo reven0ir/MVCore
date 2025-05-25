@@ -84,6 +84,11 @@ function session(): \MVCore\Session
     return app()->session;
 }
 
+function router(): \MVCore\Router
+{
+    return app()->router;
+}
+
 function get_alerts(): void
 {
     foreach (['success', 'error', 'info'] as $type) {
