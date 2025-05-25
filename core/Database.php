@@ -23,7 +23,7 @@ class Database
         return $this;
     }
 
-    public function query(string $query, array $params = [])
+    public function query(string $query, array $params = []): static
     {
         try {
             $this->stmt = $this->conn->prepare($query);
@@ -46,19 +46,24 @@ class Database
         return $this->stmt->fetchAll();
     }
 
+    public function getOne(): mixed
+    {
+        return $this->stmt->fetch();
+    }
+
     public function findAll($tbl): array|false
     {
         $this->query("SELECT * FROM {$tbl} ORDER BY id ASC");
         return $this->stmt->fetchAll();
     }
 
-    public function findOne($tbl, $id)
+    public function findOne($tbl, $id): mixed
     {
         $this->query("SELECT * FROM {$tbl} WHERE id = ? LIMIT 1", [$id]);
         return $this->stmt->fetch();
     }
 
-    public function findOrFail($tbl, $id)
+    public function findOrFail($tbl, $id): mixed
     {
         $result = $this->findOne($tbl, $id);
         if (!$result) {
@@ -76,6 +81,11 @@ class Database
     public function getRowCount(): int
     {
         return $this->stmt->rowCount();
+    }
+
+    public function getColumn(): mixed
+    {
+        return $this->stmt->fetchColumn();
     }
 
     public function getQueries(): array
