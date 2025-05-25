@@ -12,4 +12,5 @@ vendor/
 *.md
 
 #Ignore .log files
-/tmp/*.log
+tmp/*.log
+!tmp/.gitkeep
