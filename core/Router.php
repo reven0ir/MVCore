@@ -8,6 +8,7 @@ class Router
     public Response $response;
 
     protected array $routes = [];
+    public array $route_params = [];
 
     public function __construct(Request $request, Response $response)
     {
@@ -35,7 +36,7 @@ class Router
     {
         $path = $this->request->getPath();
         $method = $this->request->getMethod();
-        $callback = $this->routes[$method]["/{$path}"] ?? false;
+        $callback = $this->matchRoute($method, $path);
 
         if (false === $callback) {
             abort();
@@ -46,5 +47,21 @@ class Router
         }
 
         return call_user_func($callback);
+    }
+
+    private function matchRoute($method, $path)
+    {
+        foreach ($this->routes[$method] as $pattern => $route) {
+            if (preg_match("~^{$pattern}$~", "/{$path}", $matches)) {
+                foreach ($matches as $key => $value) {
+                    if (is_string($key)) {
+                        $this->route_params[$key] = $value;
+                    }
+                }
+                return $route;
+            }
+        }
+
+        return false;
     }
 }
