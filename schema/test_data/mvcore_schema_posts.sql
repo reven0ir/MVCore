@@ -1,5 +1,6 @@
 CREATE TABLE posts(
     id SERIAL PRIMARY KEY,
     title VARCHAR(255),
-    content TEXT
+    content TEXT,
+    slug VARCHAR(255) DEFAULT NULL UNIQUE
 );
