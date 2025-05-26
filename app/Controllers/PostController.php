@@ -3,11 +3,12 @@
 namespace App\Controllers;
 
 use App\Models\Post;
+use MVCore\View;
 
 class PostController extends BaseController
 {
 
-    public function show()
+    public function show(): View|String
     {
         $slug = router()->route_params['slug'] ?? '';
         $post = db()->query('SELECT * FROM posts WHERE slug = ?', [$slug])->getOne();
@@ -17,7 +18,7 @@ class PostController extends BaseController
 
         return view('posts/show', ['title' => $post['title'], 'post' => $post]);
     }
-    public function edit()
+    public function edit(): View|string
     {
         $id = request()->get('id');
         $post = db()->findOrFail('posts', $id);
@@ -45,7 +46,7 @@ class PostController extends BaseController
         }
         response()->redirect('/posts/edit?id=' . $id);
     }
-    public function create(): string|\MVCore\View
+    public function create(): View|string
     {
         $model = new Post();
         dump($model->validate(
@@ -101,7 +102,7 @@ class PostController extends BaseController
         response()->redirect('/posts/create');
     }
 
-    public function delete()
+    public function delete(): void
     {
         $id = request()->get('id');
         db()->findOrFail('posts', $id);
