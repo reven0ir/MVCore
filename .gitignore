@@ -14,3 +14,6 @@ vendor/
 #Ignore .log files
 tmp/*.log
 !tmp/.gitkeep
+
+#Ignore uploaded files
+public/uploads/*
