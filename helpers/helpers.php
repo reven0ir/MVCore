@@ -100,3 +100,9 @@ function get_alerts(): void
         }
     }
 }
+
+function get_file_extension($file_name): string
+{
+    $file_extension = explode('.', $file_name);
+    return end($file_extension);
+}
