@@ -6,7 +6,7 @@
 
             <h1>Create post</h1>
 
-            <form action="<?= base_url('/posts/store') ?>" method="post">
+            <form action="<?= base_url('/posts/store') ?>" method="post" enctype="multipart/form-data">
 
                 <div class="mb-3">
                     <label for="title" class="form-label">Title</label>
@@ -18,6 +18,12 @@
                     <label for="slug" class="form-label">Slug</label>
                     <input type="text" name="slug" id="slug" class="form-control <?= get_validation_class('slug', $errors ?? []) ?>" placeholder="Slug" value="<?= old('slug') ?>">
                     <?= get_errors('slug', $errors ?? []) ?>
+                </div>
+
+                <div class="mb-3">
+                    <label for="thumbnail" class="form-label">Thumbnail</label>
+                    <input type="file" name="thumbnail" id="thumbnail" class="form-control <?= get_validation_class('thumbnail', $errors ?? []) ?>">
+                    <?= get_errors('thumbnail', $errors ?? []) ?>
                 </div>
 
                 <div class="mb-3">
