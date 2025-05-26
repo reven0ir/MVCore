@@ -10,7 +10,7 @@ abstract class Model
     public array $attributes = [];
     public array $rules = [];
     public array $labels = [];
-    protected array $rules_list = ['required', 'min', 'max', 'email', 'unique'];
+    protected array $rules_list = ['required', 'min', 'max', 'email', 'unique', 'extension'];
     protected array $errors = [];
     protected array $error_messages = [
         'required' => ':field-name: field is required',
@@ -18,6 +18,7 @@ abstract class Model
         'min' => ':field-name: field must be at least minimum :rule-value: characters',
         'max' => ':field-name: field must be at most maximum :rule-value: characters',
         'unique' => ':field-name: field must be unique',
+        'extension' => ':field-name: field must be a valid file. Allowed extensions: :rule-value:',
     ];
 
     public function save(): false|string
@@ -141,7 +142,15 @@ abstract class Model
 
     protected function required($value, $rule_value): bool
     {
-        return !empty(trim($value));
+        if (is_string($value)) {
+            $value = trim($value);
+        }
+        if (is_array($value)) {
+            if (empty($value['name'])) {
+                return false;
+            }
+        }
+        return !empty($value);
     }
 
     protected function min($value, $rule_value): bool
@@ -163,6 +172,16 @@ abstract class Model
     {
         $data = explode(',', $rule_value);
         return !(db()->query("SELECT {$data[0]} FROM {$data[0]} WHERE {$data[1]} = :value", [':value' => $value])->getColumn());
+    }
+
+    protected function extension($value, $rule_value)
+    {
+        if (empty($value['name'])) {
+            return true;
+        }
+        $file_extension = get_file_extension($value['name']);
+        $allowed_extensions = explode(',', $rule_value);
+        return in_array($file_extension, $allowed_extensions);
     }
 
 }
