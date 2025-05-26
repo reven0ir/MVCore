@@ -24,7 +24,7 @@ class PostController extends BaseController
         return view('posts/edit', ['title' => 'Edit post', 'post' => $post]);
     }
 
-    public function update()
+    public function update(): void
     {
         $id = request()->post('id');
         db()->findOrFail('posts', $id);
@@ -45,8 +45,29 @@ class PostController extends BaseController
         }
         response()->redirect('/posts/edit?id=' . $id);
     }
-    public function create()
+    public function create(): string|\MVCore\View
     {
+        $model = new Post();
+        dump($model->validate(
+            [
+                'name' => 'John',
+                'email' => 'michail.yashchuck@gmail.com',
+                'text' => '1234567890',
+            ],
+            [
+                'name' => [
+                    'required' => true,
+                ],
+                'email' => [
+                    'required' => true,
+                    'email' => true,
+                ],
+                'text' => [
+                    'min' => 10,
+                ]
+            ]
+        ));
+        dump($model->getError());
         return view('posts/create', ['title' => 'Create post']);
     }
 
@@ -61,13 +82,17 @@ class PostController extends BaseController
             $model->attributes['thumbnail'] = [];
         }
 
+        if (isset($_FILES['gallery'])) {
+            $model->attributes['gallery'] = $_FILES['gallery'];
+        } else {
+            $model->attributes['gallery'] = [];
+        }
+
         if (!$model->validate()) {
-            dd($model->getError());
             return view('posts/create', ['title' => 'Create post', 'errors' => $model->getError()]);
         }
 
-
-        if ($id = $model->save()) {
+        if ($id = $model->savePost()) {
             session()->setFlash('success', 'Post ' . $id . ' created');
         } else {
             session()->setFlash('error', 'Unknown error');
