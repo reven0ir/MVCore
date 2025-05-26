@@ -10,7 +10,7 @@ abstract class Model
     public array $attributes = [];
     public array $rules = [];
     public array $labels = [];
-    protected array $rules_list = ['required', 'min', 'max', 'email', 'unique', 'extension'];
+    protected array $rules_list = ['required', 'min', 'max', 'email', 'unique', 'file', 'extension', 'size'];
     protected array $errors = [];
     protected array $error_messages = [
         'required' => ':field-name: field is required',
@@ -18,7 +18,9 @@ abstract class Model
         'min' => ':field-name: field must be at least minimum :rule-value: characters',
         'max' => ':field-name: field must be at most maximum :rule-value: characters',
         'unique' => ':field-name: field must be unique',
+        'file' => ':field-name: field is required.',
         'extension' => ':field-name: field must be a valid file. Allowed extensions: :rule-value:',
+        'size' => ':field-name: field must be a valid file. Allowed size: :rule-value: bytes',
     ];
 
     public function save(): false|string
@@ -78,15 +80,21 @@ abstract class Model
         }
     }
 
-    public function validate(): bool
+    public function validate($data = [], $rules = []): bool
     {
+        if (!$data) {
+            $data = $this->attributes;
+        }
+        if (!$rules) {
+            $rules = $this->rules;
+        }
 
-        foreach($this->attributes as $field => $value) {
-            if (isset($this->rules[$field])) {
+        foreach($data as $field => $value) {
+            if (isset($rules[$field])) {
                 $this->checkRule([
                     'field-name'    =>      $field,
                     'value'         =>      $value,
-                    'rules'         =>      $this->rules[$field],
+                    'rules'         =>      $rules[$field],
                 ]);
             }
         }
@@ -142,15 +150,7 @@ abstract class Model
 
     protected function required($value, $rule_value): bool
     {
-        if (is_string($value)) {
-            $value = trim($value);
-        }
-        if (is_array($value)) {
-            if (empty($value['name'])) {
-                return false;
-            }
-        }
-        return !empty($value);
+        return !empty(trim($value));
     }
 
     protected function min($value, $rule_value): bool
@@ -174,14 +174,72 @@ abstract class Model
         return !(db()->query("SELECT {$data[0]} FROM {$data[0]} WHERE {$data[1]} = :value", [':value' => $value])->getColumn());
     }
 
-    protected function extension($value, $rule_value)
+    protected function file($value, $rule_value): bool
     {
+        if (isset($value['error']) && is_array($value['error'])) {
+            foreach ($value['error'] as $error) {
+                if ($error != 0) {
+                    return false;
+                }
+            }
+        } elseif (isset($value['error']) && $value['error'] != 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function extension($value, $rule_value): bool
+    {
+        // file array
+        if (is_array($value['name'])) {
+            if (empty($value['name'][0])) {
+                return true;
+            }
+
+            for ($i = 0; $i < count($value['name']); $i++) {
+                $file_extension = get_file_extension($value['name'][$i]);
+                $allowed_extensions = explode(',', $rule_value);
+
+                if (!in_array($file_extension, $allowed_extensions)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        // single file
         if (empty($value['name'])) {
             return true;
         }
         $file_extension = get_file_extension($value['name']);
         $allowed_extensions = explode(',', $rule_value);
         return in_array($file_extension, $allowed_extensions);
+    }
+
+    protected function size($value, $rule_value): bool
+    {
+        // file array
+        if (is_array($value['size'])) {
+            if (empty($value['size'][0])) {
+                return true;
+            }
+
+            for ($i = 0; $i < count($value['size']); $i++) {
+                if ($value['size'][$i] > $rule_value) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        // single file
+        if (empty($value['size'])) {
+            return true;
+        }
+        return $value['size'] <= $rule_value;
     }
 
 }
