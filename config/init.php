@@ -5,6 +5,7 @@ define("ROOT", dirname(__DIR__));
 const DEBUG = true;
 const ERROR_LOG_FILE = ROOT . '/tmp/error.log';
 const WWW = ROOT . '/public';
+const UPLOADS = WWW . '/uploads';
 const APP = ROOT . '/app';
 const CORE = ROOT . '/core';
 const HELPERS = ROOT . '/helpers';
