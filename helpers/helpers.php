@@ -64,7 +64,7 @@ function get_validation_class($field_name, $errors = []): string
     }
 }
 
-function abort($error = '', $code = 404)
+function abort($error = '', $code = 404): void
 {
     response()->setResponseCode($code);
     if (DEBUG || $code = 404) {
@@ -105,4 +105,22 @@ function get_file_extension($file_name): string
 {
     $file_extension = explode('.', $file_name);
     return end($file_extension);
+}
+
+function upload_file($file, $index = false) : false|string
+{
+    $file_extension = (false === $index) ? get_file_extension($file['name']) : get_file_extension($file['name'][$index]);
+    $dir = '/' . date("Y") . '/' . date("m") . '/' . date("d");
+    if (!is_dir(UPLOADS . $dir)) {
+        mkdir(UPLOADS . $dir, 0755, true);
+    }
+    $file_name = md5(((false === $index) ? $file['name'] : $file['name'][$index]) . time());
+    $file_path = UPLOADS . $dir . '/' . $file_name . '.' . $file_extension;
+    $file_url = base_url("/uploads{$dir}/{$file_name}.{$file_extension}");
+    if (move_uploaded_file((false === $index) ? $file['tmp_name'] : $file['tmp_name'][$index], $file_path)) {
+        return $file_url;
+    } else {
+        error_log('[' . date('Y-m-d H:i:s') . '] Uploading file error: ' . PHP_EOL, 3, ERROR_LOG_FILE);
+        return false;
+    }
 }
