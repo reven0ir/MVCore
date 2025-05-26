@@ -17,3 +17,4 @@ tmp/*.log
 
 #Ignore uploaded files
 public/uploads/*
+!public/uploads/.gitkeep
