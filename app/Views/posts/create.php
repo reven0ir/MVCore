@@ -27,6 +27,12 @@
                 </div>
 
                 <div class="mb-3">
+                    <label for="gallery" class="form-label">Gallery</label>
+                    <input type="file" name="gallery[]" id="gallery" multiple class="form-control <?= get_validation_class('gallery', $errors ?? []) ?>">
+                    <?= get_errors('gallery', $errors ?? []) ?>
+                </div>
+
+                <div class="mb-3">
                     <label for="content" class="form-label">Content</label>
                     <textarea name="content" id="content" class="form-control <?= get_validation_class('content', $errors ?? []) ?>" rows="3"><?= old('content') ?></textarea>
                     <?= get_errors('content', $errors ?? []) ?>
