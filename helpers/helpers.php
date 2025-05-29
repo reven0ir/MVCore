@@ -67,7 +67,7 @@ function get_validation_class($field_name, $errors = []): string
 function abort($error = '', $code = 404): void
 {
     response()->setResponseCode($code);
-    if (DEBUG || $code = 404) {
+    if (DEBUG || $code == 404) {
         echo view("errors/{$code}", ['error' => $error], false);
     }
 
