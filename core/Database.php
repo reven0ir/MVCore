@@ -88,6 +88,12 @@ class Database
         return $this->stmt->fetchColumn();
     }
 
+    public function count($tbl)
+    {
+        $this->query("SELECT COUNT(*) FROM {$tbl}");
+        return $this->getColumn();
+    }
+
     public function getQueries(): array
     {
         $res = [];
