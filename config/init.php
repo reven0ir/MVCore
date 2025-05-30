@@ -2,7 +2,7 @@
 
 define("ROOT", dirname(__DIR__));
 
-const DEBUG = true;
+const DEBUG = false;
 const ERROR_LOG_FILE = ROOT . '/tmp/error.log';
 const WWW = ROOT . '/public';
 const UPLOADS = WWW . '/uploads';
