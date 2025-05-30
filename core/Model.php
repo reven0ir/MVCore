@@ -5,12 +5,13 @@ namespace MVCore;
 abstract class Model
 {
 
-    public string $table = '';
-    public array $fillable = [];
+    protected string $table = '';
+    protected array $fillable = [];
     public array $attributes = [];
-    public array $rules = [];
-    public array $labels = [];
-    protected array $rules_list = ['required', 'min', 'max', 'email', 'unique', 'file', 'extension', 'size'];
+    protected array $rules = [];
+    protected array $labels = [];
+    protected array $data_items = [];
+    protected array $rules_list = ['required', 'min', 'max', 'email', 'unique', 'file', 'extension', 'size', 'match'];
     protected array $errors = [];
     protected array $error_messages = [
         'required' => ':field-name: field is required',
@@ -21,6 +22,7 @@ abstract class Model
         'file' => ':field-name: field is required.',
         'extension' => ':field-name: field must be a valid file. Allowed extensions: :rule-value:',
         'size' => ':field-name: field must be a valid file. Allowed size: :rule-value: bytes',
+        'match' => ':field-name: field must match :rule-value: field',
     ];
 
     public function save(): false|string
@@ -88,6 +90,8 @@ abstract class Model
         if (!$rules) {
             $rules = $this->rules;
         }
+
+        $this->data_items = $data;
 
         foreach($data as $field => $value) {
             if (isset($rules[$field])) {
@@ -166,6 +170,11 @@ abstract class Model
     protected function email($value, $rule_value): bool
     {
         return filter_var($value, FILTER_VALIDATE_EMAIL);
+    }
+
+    protected function match($value, $rule_value): bool
+    {
+        return $value === $this->data_items[$rule_value];
     }
 
     protected function unique($value, $rule_value): bool
