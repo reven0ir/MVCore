@@ -32,6 +32,24 @@
                     <a class="nav-link" href="<?= base_url('/posts/create') ?>">Create post</a>
                 </li>
             </ul>
+
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <?php if (!check_auth()): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('/register') ?>">Sign Up</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('/login') ?>">Sign In</a>
+                    </li>
+                <?php else: ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Hello, <?php echo session()->get('user')['name']; ?></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('/logout') ?>">Sign Out</a>
+                    </li>
+                <?php endif; ?>
+            </ul>
         </div>
     </div>
 </nav>
