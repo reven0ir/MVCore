@@ -7,6 +7,7 @@ $app->router->get('/about', function () {
     return view('about', ['title' => 'About']);
 });
 
+// Post
 $app->router->get('/contact', [\App\Controllers\ContactController::class, 'index']);
 $app->router->post('/contact', [\App\Controllers\ContactController::class, 'send']);
 
@@ -20,3 +21,6 @@ $app->router->get('/posts/delete', [\App\Controllers\PostController::class, 'del
 $app->router->post('/posts/update', [\App\Controllers\PostController::class, 'update']);
 
 $app->router->get('/posts/(?P<slug>[a-z0-9-]+)', [\App\Controllers\PostController::class, 'show']);
+
+// User
+$app->router->add('/register', [\App\Controllers\UserController::class, 'register'], ['get', 'post']);
