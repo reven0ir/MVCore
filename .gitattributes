@@ -1,2 +1,11 @@
 *.php linguist-language=PHP
 *.sql linguist-language=SQL
+
+* text=auto
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg binary
+*.ico binary
