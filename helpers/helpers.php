@@ -1,5 +1,7 @@
 <?php
 
+use JetBrains\PhpStorm\NoReturn;
+
 function app(): \MVCore\Application
 {
     return \MVCore\Application::$app;
@@ -64,7 +66,7 @@ function get_validation_class($field_name, $errors = []): string
     }
 }
 
-function abort($error = '', $code = 404): void
+#[NoReturn] function abort($error = '', $code = 404): void
 {
     response()->setResponseCode($code);
     if (DEBUG || $code == 404) {
@@ -123,4 +125,9 @@ function upload_file($file, $index = false) : false|string
         error_log('[' . date('Y-m-d H:i:s') . '] Uploading file error: ' . PHP_EOL, 3, ERROR_LOG_FILE);
         return false;
     }
+}
+
+function check_auth(): bool
+{
+    return session()->has('user');
 }
