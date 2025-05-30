@@ -49,26 +49,7 @@ class PostController extends BaseController
     public function create(): View|string
     {
         $model = new Post();
-        dump($model->validate(
-            [
-                'name' => 'John',
-                'email' => 'michail.yashchuck@gmail.com',
-                'text' => '1234567890',
-            ],
-            [
-                'name' => [
-                    'required' => true,
-                ],
-                'email' => [
-                    'required' => true,
-                    'email' => true,
-                ],
-                'text' => [
-                    'min' => 10,
-                ]
-            ]
-        ));
-        dump($model->getError());
+
         return view('posts/create', ['title' => 'Create post']);
     }
 
