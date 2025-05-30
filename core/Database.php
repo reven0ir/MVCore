@@ -53,7 +53,7 @@ class Database
 
     public function findAll($tbl): array|false
     {
-        $this->query("SELECT * FROM {$tbl} ORDER BY id ASC");
+        $this->query("SELECT * FROM {$tbl} ORDER BY id");
         return $this->stmt->fetchAll();
     }
 
