@@ -7,10 +7,10 @@ use MVCore\Model;
 class Post extends Model
 {
 
-    public string $table = 'posts';
+    protected string $table = 'posts';
 
-    public array $fillable = ['title', 'content', 'slug'];
-    public array $rules = [
+    protected array $fillable = ['title', 'content', 'slug'];
+    protected array $rules = [
         'title' => [
             'required' => true,
         ],
@@ -31,7 +31,7 @@ class Post extends Model
             'size' => 1_048_576, // 1MB
         ]
     ];
-    public array $labels = [
+    protected array $labels = [
         'title' => 'Post title',
         'content' => 'Post content',
         'slug' => 'Slug',
