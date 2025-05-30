@@ -3,11 +3,12 @@
 namespace App\Controllers;
 
 use App\Models\Contact;
+use MVCore\View;
 
 class ContactController extends BaseController
 {
 
-    public function index()
+    public function index(): View|string
     {
         $title = 'Contact';
 
