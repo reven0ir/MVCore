@@ -21,15 +21,32 @@ class Router
         return $this->routes;
     }
 
-    public function get($path, $callback): void
+    public function add($path, $callback, $method): self
     {
         $path = trim($path, '/');
-        $this->routes['GET']["/{$path}"] = $callback;
+        if (is_array($method)) {
+            $method = array_map('strtoupper', $method);
+        } else {
+            $method = [strtoupper($method)];
+        }
+        foreach ($method as $item_method) {
+            $this->routes[$item_method]["/{$path}"] = [
+                'callback' => $callback,
+                'middleware' => null,
+            ];
+        }
+
+        return $this;
     }
 
-    public function post($path, $callback): void
+    public function get($path, $callback): self
     {
-        $this->routes['POST'][$path] = $callback;
+        return $this->add($path, $callback, 'GET');
+    }
+
+    public function post($path, $callback): self
+    {
+        return $this->add($path, $callback, 'POST');
     }
 
     public function dispatch(): mixed
@@ -42,11 +59,11 @@ class Router
             abort();
         }
 
-        if (is_array($callback)) {
-            $callback[0] = new $callback[0];
+        if (is_array($callback['callback'])) {
+            $callback['callback'][0] = new $callback['callback'][0];
         }
 
-        return call_user_func($callback);
+        return call_user_func($callback['callback']);
     }
 
     private function matchRoute($method, $path)
