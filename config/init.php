@@ -26,3 +26,16 @@ const DB = [
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ],
 ];
+
+const EMAIL = [
+    'host' => 'sandbox.smtp.mailtrap.io',
+    'auth' => true,
+    'username' => '5dc446a180c260',
+    'password' => 'e166ea360d95b0',
+    'secure' => null,
+    'port' => 2525,
+    'from_email' => 'd9473d2dc4-87bb90@inbox.mailtrap.io',
+    'is_html' => true,
+    'charset' => 'UTF-8',
+    'debug' => 0,
+];
