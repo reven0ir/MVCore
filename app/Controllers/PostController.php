@@ -34,7 +34,10 @@ class PostController extends BaseController
         $model->loadData();
         $model->attributes['id'] = $id;
 
-        if (!$model->validate()) {
+        if (!$model->validate($model->attributes, [
+            'title' => ['required' => true],
+            'content' => ['required' => true],
+        ])) {
             session()->setFlash('error', $model->listError());
             response()->redirect('/posts/edit?id=' . $id);
         }
