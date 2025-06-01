@@ -2,7 +2,7 @@
 
 define("ROOT", dirname(__DIR__));
 
-const DEBUG = false;
+const DEBUG = true;
 const ERROR_LOG_FILE = ROOT . '/tmp/error.log';
 const WWW = ROOT . '/public';
 const UPLOADS = WWW . '/uploads';
@@ -14,6 +14,7 @@ const VIEWS = APP . '/Views';
 const LAYOUT = 'default';
 const PATH = 'https://mvcore';
 const LOGIN_PAGE = PATH . '/login';
+const CACHE = ROOT . '/tmp/cache';
 const DB = [
     'host'      =>  'PostgreSQL-17',
     'user'      =>  'revenoir',
