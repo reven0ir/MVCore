@@ -41,7 +41,7 @@ abstract class Model
         return db()->getInsertId();
     }
 
-    public function update()
+    public function update(): false|int
     {
         if (!isset($this->attributes['id'])) {
             return false;
