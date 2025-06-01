@@ -37,6 +37,7 @@ class PostController extends BaseController
         if (!$model->validate($model->attributes, [
             'title' => ['required' => true],
             'content' => ['required' => true],
+            'slug' => ['required' => true,'unique' => 'posts,slug:id'],
         ])) {
             session()->setFlash('error', $model->listError());
             response()->redirect('/posts/edit?id=' . $id);
