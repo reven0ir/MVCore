@@ -114,7 +114,7 @@ function get_file_extension($file_name): string
     return end($file_extension);
 }
 
-function upload_file($file, $index = false) : false|string
+function upload_file($file, $index = false, $path = false) : false|string
 {
     $file_extension = (false === $index) ? get_file_extension($file['name']) : get_file_extension($file['name'][$index]);
     $dir = '/' . date("Y") . '/' . date("m") . '/' . date("d");
@@ -125,6 +125,10 @@ function upload_file($file, $index = false) : false|string
     $file_path = UPLOADS . $dir . '/' . $file_name . '.' . $file_extension;
     $file_url = base_url("/uploads{$dir}/{$file_name}.{$file_extension}");
     if (move_uploaded_file((false === $index) ? $file['tmp_name'] : $file['tmp_name'][$index], $file_path)) {
+        if ($path) {
+            return $file_path;
+        }
+
         return $file_url;
     } else {
         error_log('[' . date('Y-m-d H:i:s') . '] Uploading file error: ' . PHP_EOL, 3, ERROR_LOG_FILE);
@@ -135,4 +139,40 @@ function upload_file($file, $index = false) : false|string
 function check_auth(): bool
 {
     return session()->has('user');
+}
+
+function send_mail(array $to, string $subject, string $body, array $attachments = []): bool
+{
+    $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+
+    try {
+        $mail->SMTPDebug = EMAIL['debug'];
+        $mail->isSMTP();
+        $mail->Host       = EMAIL['host'];
+        $mail->SMTPAuth   = EMAIL['auth'];
+        $mail->Username   = EMAIL['username'];
+        $mail->Password   = EMAIL['password'];
+        $mail->SMTPSecure = EMAIL['secure'];
+        $mail->Port       = EMAIL['port'];
+
+        $mail->setFrom(EMAIL['from_email']);
+        foreach ($to as $email) {
+            $mail->addAddress($email);
+        }
+
+        if ($attachments) {
+            foreach ($attachments as $attachment) {
+                $mail->addAttachment($attachment);
+            }
+        }
+
+        $mail->isHTML(EMAIL['is_html']);
+        $mail->Subject = $subject;
+        $mail->Body    = $body;
+        $mail->CharSet = EMAIL['charset'];
+        return $mail->send();
+    } catch (\PHPMailer\PHPMailer\Exception $e) {
+        error_log('[' . date('Y-m-d H:i:s') . '] Mail Error: ' . $mail->ErrorInfo . PHP_EOL, 3, ERROR_LOG_FILE);
+        return false;
+    }
 }
