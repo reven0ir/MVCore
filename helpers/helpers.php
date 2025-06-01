@@ -91,6 +91,11 @@ function router(): \MVCore\Router
     return app()->router;
 }
 
+function cache(): \MVCore\Cache
+{
+    return app()->cache;
+}
+
 function get_alerts(): void
 {
     foreach (['success', 'error', 'info'] as $type) {
