@@ -14,6 +14,11 @@
                 </div>
 
                 <div class="mb-3">
+                    <label for="slug" class="form-label">Slug</label>
+                    <input type="text" name="slug" id="slug" class="form-control" placeholder="Slug" value="<?= h($post['slug']) ?>">
+                </div>
+
+                <div class="mb-3">
                     <label for="content" class="form-label">Content</label>
                     <textarea name="content" id="content" class="form-control" rows="3"><?= h($post['content']) ?></textarea>
                 </div>
