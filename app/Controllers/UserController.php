@@ -21,7 +21,7 @@ class UserController extends BaseController
             unset($model->attributes['repassword']);
             if ($model->save()) {
                 session()->setFlash('success', 'Successfully registered.');
-                response()->redirect('/login');
+                response()->redirect(LOGIN_PAGE);
             } else {
                 session()->setFlash('error', 'Error registering.');
             }
@@ -47,7 +47,7 @@ class UserController extends BaseController
                 response()->redirect('/');
             } else {
                 session()->setFlash('error', 'Incorrect email or password.');
-                response()->redirect('/login');
+                response()->redirect(LOGIN_PAGE);
             }
         }
 
