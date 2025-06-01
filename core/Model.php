@@ -180,6 +180,10 @@ abstract class Model
     protected function unique($value, $rule_value): bool
     {
         $data = explode(',', $rule_value);
+        if (str_contains($data[1], ':')) {
+            $data_fields = explode(':', $data[1]);
+            return !(db()->query("SELECT {$data_fields[0]} FROM {$data[0]} WHERE {$data_fields[0]} = :value AND {$data_fields[1]} != :id", [':value' => $value, ':id' => $this->data_items[$data_fields[1]]])->getColumn());
+        }
         return !(db()->query("SELECT {$data[0]} FROM {$data[0]} WHERE {$data[1]} = :value", [':value' => $value])->getColumn());
     }
 
