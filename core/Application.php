@@ -11,7 +11,9 @@ class Application
     public View $view;
     public Database $db;
     public Session $session;
+    public Cache $cache;
     public static Application $app;
+    protected array $container = [];
 
 
     public function __construct()
@@ -24,10 +26,21 @@ class Application
         $this->view = new View(LAYOUT);
         $this->db = new Database();
         $this->session = new Session();
+        $this->cache = new Cache();
     }
 
     public function run(): void
     {
         echo $this->router->dispatch();
+    }
+
+    public function get($key, $default = null)
+    {
+        return $this->container[$key] ?? $default;
+    }
+
+    public function set($key, $value): void
+    {
+        $this->container[$key] = $value;
     }
 }
