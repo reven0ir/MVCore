@@ -15,6 +15,10 @@ vendor/
 tmp/*.log
 !tmp/.gitkeep
 
+#Ignore .txt cache files
+tmp/cache/*.txt
+!tmp/cache/.gitkeep
+
 #Ignore uploaded files
 public/uploads/*
 !public/uploads/.gitkeep
