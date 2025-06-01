@@ -29,12 +29,13 @@ class Router
         } else {
             $method = [strtoupper($method)];
         }
-        foreach ($method as $item_method) {
-            $this->routes[$item_method]["/{$path}"] = [
-                'callback' => $callback,
-                'middleware' => null,
-            ];
-        }
+
+        $this->routes[] = [
+            'path' => '/' . $path,
+            'callback' => $callback,
+            'middleware' => null,
+            'method' => $method,
+        ];
 
         return $this;
     }
@@ -68,17 +69,33 @@ class Router
 
     private function matchRoute($method, $path)
     {
-        foreach ($this->routes[$method] as $pattern => $route) {
-            if (preg_match("~^{$pattern}$~", "/{$path}", $matches)) {
+        foreach ($this->routes as $route) {
+            if ((preg_match("~^{$route['path']}$~", "/{$path}", $matches)) && (in_array($this->request->getMethod(), $route['method']))) {
+
+                if ($route['middleware']) {
+                    $middleware = MIDDLEWARE[$route['middleware']] ?? false;
+                    if ($middleware) {
+                        (new $middleware)->handle();
+                    }
+                }
+
                 foreach ($matches as $key => $value) {
                     if (is_string($key)) {
                         $this->route_params[$key] = $value;
                     }
                 }
+
                 return $route;
             }
         }
 
         return false;
+    }
+
+    public function only($middleware): self
+    {
+        $this->routes[array_key_last($this->routes)]['middleware'] = $middleware;
+
+        return $this;
     }
 }
