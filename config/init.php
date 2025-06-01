@@ -13,6 +13,7 @@ const CONFIG = ROOT . '/config';
 const VIEWS = APP . '/Views';
 const LAYOUT = 'default';
 const PATH = 'https://mvcore';
+const LOGIN_PAGE = PATH . '/login';
 const DB = [
     'host'      =>  'PostgreSQL-17',
     'user'      =>  'revenoir',
